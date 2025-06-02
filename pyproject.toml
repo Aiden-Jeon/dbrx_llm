@@ -1,0 +1,14 @@
+[project]
+name = "dbrx_llm"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = "~=3.11.0"
+dependencies = [
+    "datasets==3.6.0",
+    "mlflow==2.21.0",
+    "mosaicml==0.28.0",
+    "mosaicml-streaming==0.11.0",
+    "torch==2.3.1",
+    "torchmetrics==1.6.0",
+]
