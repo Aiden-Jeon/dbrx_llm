@@ -1,7 +1,7 @@
 import uuid
-from typing import Dict, Any, Union
+from typing import Dict, Any
 from datasets import Dataset, load_dataset as load_huggingface_dataset
-from transformers import AutoTokenizer, PreTrainedTokenizer
+from transformers import AutoTokenizer
 from streaming import StreamingDataset, StreamingDataLoader
 
 
@@ -41,7 +41,6 @@ def load_tokenized_dataset(dataset_name: str, tokenizer_name: str) -> Dataset:
         )
 
     tokenized_datasets = dataset.map(_tokenize_function, batched=True)
-    tokenized_datasets = tokenized_datasets.remove_columns("text")
     return tokenized_datasets
 
 
