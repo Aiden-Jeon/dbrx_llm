@@ -1,8 +1,6 @@
 import mlflow
 import torch
 import torch.nn as nn
-from typing import Any, Dict, Optional
-import numpy as np
 
 
 class PyfuncSentimentClassifier(mlflow.pyfunc.PythonModel):
@@ -11,7 +9,6 @@ class PyfuncSentimentClassifier(mlflow.pyfunc.PythonModel):
     This class wraps a PyTorch model to make it compatible with MLflow's Python model interface,
     handling the conversion of inputs to tensors and outputs to numpy arrays.
     """
-
     def __init__(self, model: nn.Module) -> None:
         """Initialize the custom model wrapper.
 
@@ -23,22 +20,7 @@ class PyfuncSentimentClassifier(mlflow.pyfunc.PythonModel):
         self.device = next(self.model.parameters()).device
 
     @torch.no_grad()
-    def predict(
-        self,
-        context: Any,
-        model_input: Dict[str, Any],
-        params: Optional[Dict[str, Any]] = None,
-    ) -> np.ndarray:
-        """Make predictions using the wrapped model.
-
-        Args:
-            context (mlflow.pyfunc.PythonModelContext): MLflow model context.
-            model_input (Dict[str, Any]): Input data containing 'input_ids' and 'attention_mask'.
-            params (Optional[Dict[str, Any]], optional): Additional parameters. Defaults to None.
-
-        Returns:
-            np.ndarray: Model predictions as a numpy array.
-        """
+    def predict(self, context, model_input):
         input_ids, attention_mask = (
             model_input["input_ids"],
             model_input["attention_mask"],
