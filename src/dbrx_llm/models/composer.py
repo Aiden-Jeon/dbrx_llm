@@ -1,7 +1,6 @@
 import torch
-import torch.nn as nn
 import torch.nn.functional as F
-from typing import Dict, Any, Optional
+from typing import Dict, Optional
 from torchmetrics import Accuracy
 from composer.models import ComposerModel
 from dbrx_llm.models.pytorch import SentimentClassifier

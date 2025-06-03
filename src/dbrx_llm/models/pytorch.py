@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from transformers import AutoModel, PreTrainedModel
+from transformers import AutoModel
 
 
 class SentimentClassifier(nn.Module):

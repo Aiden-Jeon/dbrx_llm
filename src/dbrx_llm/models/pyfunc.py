@@ -1,11 +1,11 @@
 import mlflow
 import torch
 import torch.nn as nn
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional
 import numpy as np
 
 
-class CustomModel(mlflow.pyfunc.PythonModel):
+class PyfuncSentimentClassifier(mlflow.pyfunc.PythonModel):
     """A custom MLflow model wrapper for PyTorch sentiment classification models.
 
     This class wraps a PyTorch model to make it compatible with MLflow's Python model interface,
@@ -25,7 +25,7 @@ class CustomModel(mlflow.pyfunc.PythonModel):
     @torch.no_grad()
     def predict(
         self,
-        context: mlflow.pyfunc.PythonModelContext,
+        context: Any,
         model_input: Dict[str, Any],
         params: Optional[Dict[str, Any]] = None,
     ) -> np.ndarray:
