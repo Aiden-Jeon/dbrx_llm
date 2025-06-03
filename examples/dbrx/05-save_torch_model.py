@@ -249,11 +249,6 @@ with mlflow.start_run(experiment_id=experiment_id, run_id=run_id):
         artifact_path="model",
         input_example=input_example,
         conda_env=conda_env,
-        # extra_pip_requirements=[
-        #     "torch==2.3.1",
-        #     "transformers==4.41.2",
-        #     "/Volumes/jongseob_demo/distributed/package/dbrx_llm-0.1.0-py3-none-any.whl",
-        # ],
     )
 
 # COMMAND ----------
