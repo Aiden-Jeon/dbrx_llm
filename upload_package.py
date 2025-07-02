@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# Databricks notebook source
 """
 Package builder and uploader script.
 
@@ -13,6 +13,8 @@ import subprocess
 import argparse
 from pathlib import Path
 from typing import Optional
+
+# COMMAND ----------
 
 
 def check_package_exists(package_path: str) -> bool:
@@ -109,28 +111,12 @@ def copy_package(source_path: str, destination_path: str) -> bool:
         print(f"Error copying package: {e}")
         return False
 
+# COMMAND ----------
 
-def main():
-    """Main function to orchestrate the package building and copying process."""
-    parser = argparse.ArgumentParser(
-        description="Build and copy package to specified path"
-    )
-    parser.add_argument(
-        "--destination-path",
-        default="/Volumes/jongseob_demo/distributed/package/",
-        help="Path where the package should be copied (can be a file path or directory)",
-    )
-    parser.add_argument(
-        "--force-rebuild",
-        action="store_true",
-        help="Force rebuild the package even if it exists at destination",
-    )
-
-    args = parser.parse_args()
-
+def run():
     # Check if package already exists at destination
-    if check_package_exists(args.destination_path) and not args.force_rebuild:
-        print(f"Package already exists at {args.destination_path}")
+    if check_package_exists(destination_path) and not force_rebuild:
+        print(f"Package already exists at {destination_path}")
         print("Use --force-rebuild to rebuild and overwrite the existing package.")
         return 0
 
@@ -146,13 +132,20 @@ def main():
         return 1
 
     # Copy the package to destination
-    if not copy_package(built_package_path, args.destination_path):
+    if not copy_package(built_package_path, destination_path):
         print("Failed to copy package. Exiting.")
         return 1
 
     print("Package build and copy completed successfully!")
-    return 0
 
+# COMMAND ----------
 
-if __name__ == "__main__":
-    sys.exit(main())
+destination_path = "/Volumes/jongseob_demo/distributed/package/"
+force_rebuild = False
+
+# COMMAND ----------
+
+run()
+
+# COMMAND ----------
+
