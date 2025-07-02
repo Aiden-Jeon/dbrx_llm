@@ -117,7 +117,6 @@ def main():
     )
     parser.add_argument(
         "--destination-path",
-        required=True,
         default="/Volumes/jongseob_demo/distributed/package/",
         help="Path where the package should be copied (can be a file path or directory)",
     )
