@@ -58,6 +58,8 @@ import ray
 import mlflow
 import torch
 import torch.optim as optim
+from ray.air.integrations.mlflow import setup_mlflow
+from mlflow.utils.databricks_utils import get_databricks_env_vars
 from torch.utils.data import DataLoader
 
 from dbrx_llm.models import SentimentClassifier
@@ -65,6 +67,7 @@ from dbrx_llm.dataset import load_torch_dataset
 from dbrx_llm.train import train_one_epoch
 from dbrx_llm.eval import AverageMeter, evaluate_one_epoch
 
+mlflow_db_creds = get_databricks_env_vars("databricks")
 
 def train_func_per_worker(config: Dict):
     experiment_path = config["experiment_path"]
@@ -77,9 +80,8 @@ def train_func_per_worker(config: Dict):
     #################### Setting up MLflow ####################
     print("Set MLflow logger")
     # We need to do this so that different processes that will be able to find mlflow
-    os.environ["DATABRICKS_HOST"] = db_host
-    os.environ["DATABRICKS_TOKEN"] = db_token
-    experiment = mlflow.set_experiment(experiment_path)
+    os.environ.update(mlflow_db_creds)
+    mlflow.set_experiment(experiment_path)
     ###########################################################
 
     ###########################################################
@@ -108,6 +110,7 @@ def train_func_per_worker(config: Dict):
     optimizer = optim.AdamW(model.parameters(), lr=5e-5)
     ###########################################################
     print("Start Training")
+
     for epoch in range(num_epochs):
         if ray.train.get_context().get_world_size() > 1:
             # Required for the distributed sampler to shuffle properly across epochs.
@@ -134,7 +137,7 @@ def train_func_per_worker(config: Dict):
         # [3] Report metrics to Ray Train
         # ===============================
         ray.train.report(metrics={"loss": test_loss, "accuracy": test_acc})
-
+    mlflow.end_run()
 
 # COMMAND ----------
 
@@ -163,8 +166,8 @@ trainer = TorchTrainer(
     train_loop_config=train_config,
     scaling_config=ScalingConfig(num_workers=1, use_gpu=True),
 )
-result = trainer.fit()
 
+result = trainer.fit()
 
 # COMMAND ----------
 
@@ -176,7 +179,7 @@ result = trainer.fit()
 import ray
 from ray.util.spark import setup_ray_cluster
 
-ray.shutdown()
+ray.util.spark.shutdown_ray_cluster()
 setup_ray_cluster(max_worker_nodes=4)
 
 # COMMAND ----------
@@ -202,6 +205,3 @@ trainer = TorchTrainer(
     scaling_config=ScalingConfig(num_workers=4, use_gpu=True),
 )
 result = trainer.fit()
-
-# COMMAND ----------
-
